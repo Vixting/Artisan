@@ -136,7 +136,7 @@ namespace Artisan.UI
                         ImGui.Spacing();
                         ImGui.Separator();
 
-                        if (ImGui.Selectable("Overview", OpenWindow == OpenWindow.Overview))
+                        if (ImGui.Selectable("Over", OpenWindow == OpenWindow.Overview))
                         {
                             OpenWindow = OpenWindow.Overview;
                         }
