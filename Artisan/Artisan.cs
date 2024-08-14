@@ -269,29 +269,24 @@ public unsafe class Artisan : IDalamudPlugin
             P.Config.Save();
             return;
         }
+
         if (subcommands.Length >= 2)
         {
-
-
-            if (firstArg.ToLower() == "lists")
-            {
-                if (subcommands.Length >= 3)
+            if (firstArg.ToLower() == "lists" && subcommands.Length >= 3)
                 {
-                    if (int.TryParse(subcommands[1], out int id))
+                    if (int.TryParse(subcommands[1], out int id) && P.Config.NewCraftingLists.Any(x => x.ID == id))
                     {
-                        if (P.Config.NewCraftingLists.Any(x => x.ID == id))
+                        switch (subcommands[2].ToLower())
                         {
-                            if (subcommands[2].ToLower() == "start")
-                            {
+                            case "start":
                                 if (!Endurance.Enable && !CraftingListUI.Processing)
                                 {
                                     CraftingListUI.selectedList = P.Config.NewCraftingLists.First(x => x.ID == id);
                                     CraftingListUI.StartList();
-                                    return;
                                 }
-                            }
-                            else if (subcommands[2].ToLower() == "pause")
-                            {
+                                break;
+
+                            case "pause":
                                 if (CraftingListUI.Processing)
                                 {
                                     CraftingListFunctions.Paused = true;
@@ -303,10 +298,9 @@ public unsafe class Artisan : IDalamudPlugin
                                 {
                                     DuoLog.Error("Cannot pause as no list is currently being processed.");
                                 }
-                                return;
-                            }
-                            else if (subcommands[2].ToLower() == "resume")
-                            {
+                                break;
+
+                            case "resume":
                                 if (Crafting.CurState is Crafting.State.IdleNormal or Crafting.State.IdleBetween)
                                 {
                                     var recipe = LuminaSheets.RecipeSheet[CraftingListUI.CurrentProcessedItem];
@@ -314,23 +308,18 @@ public unsafe class Artisan : IDalamudPlugin
                                 }
 
                                 CraftingListFunctions.Paused = false;
-  
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            DuoLog.Error("List ID does not exist.");
+                                break;
+
+                            default:
+                                DuoLog.Error("Invalid command.");
+                                break;
                         }
                     }
                     else
                     {
-                        DuoLog.Error("Unable to parse ID as a number.");
+                        DuoLog.Error(int.TryParse(subcommands[1], out _) ? "List ID does not exist." : "Unable to parse ID as a number.");
                     }
                 }
-            }
-
-
 
             if (firstArg.ToLower() == "macros")
             {
